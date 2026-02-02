@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Utility Pro Invoices",
+  "version": "1.0.0",
+  "description": "Easy pro-rated billing on TurboTenant",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://rental.turbotenant.com/*",
+    "https://api.turbotenant.com/*",
+    "https://api.anthropic.com/*",
+    "https://api.openai.com/*"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "options_page": "options/options.html",
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://rental.turbotenant.com/*"],
+      "js": ["content/turbotenant.js"],
+      "css": []
+    }
+  ],
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  }
+}

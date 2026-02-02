@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+scripts/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Developer secrets - never commit
+extension/lib/config.js
+*.local.js
+.env
+.env.*
