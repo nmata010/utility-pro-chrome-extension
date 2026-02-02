@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utility Pro Invoices</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Utility Pro Invoices</h1>
+      <p class="subtitle">Easy pro-rated billing on TurboTenant</p>
+    </header>
+
+    <!-- Step indicator (hidden on home) -->
+    <div class="steps hidden" id="steps-indicator">
+      <div class="step active" data-step="1">
+        <span class="step-number">1</span>
+        <span class="step-label">Lease</span>
+      </div>
+      <div class="step" data-step="2">
+        <span class="step-number">2</span>
+        <span class="step-label">Upload</span>
+      </div>
+      <div class="step" data-step="3">
+        <span class="step-number">3</span>
+        <span class="step-label">Review</span>
+      </div>
+      <div class="step" data-step="4">
+        <span class="step-number">4</span>
+        <span class="step-label">Charge</span>
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <main class="content">
+      <!-- Home: Select Utility Type -->
+      <section class="panel" id="panel-home">
+        <h2>What are you billing?</h2>
+        <div class="utility-tiles">
+          <button class="utility-tile" id="tile-electric">
+            <span class="tile-icon">⚡</span>
+            <span class="tile-label">Electric Bill</span>
+          </button>
+          <button class="utility-tile disabled" id="tile-water">
+            <span class="tile-icon">💧</span>
+            <span class="tile-label">Water Bill</span>
+            <span class="tile-badge">Coming Soon</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 1: Select Lease -->
+      <section class="panel hidden" id="panel-lease">
+        <h2>Select Lease</h2>
+
+        <!-- State: Not on leases page -->
+        <div id="lease-state-navigate" class="lease-state">
+          <p class="hint">Click below to go to TurboTenant, then reopen this extension to select a lease.</p>
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="btn-back-home-nav">Back</button>
+            <button class="btn btn-primary" id="btn-go-leases">Go to Leases</button>
+          </div>
+        </div>
+
+        <!-- State: On leases page -->
+        <div id="lease-state-ready" class="lease-state hidden">
+          <div class="lease-selector">
+            <label>Which lease are you billing?</label>
+            <select id="lease-select">
+              <option value="">Loading leases...</option>
+            </select>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="btn-back-home">Back</button>
+            <button class="btn btn-primary" id="btn-lease-next" disabled>Next</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2: Upload Documents -->
+      <section class="panel hidden" id="panel-upload">
+        <h2>Upload Documents</h2>
+        <p class="selected-lease-display">Billing: <strong id="selected-lease-name">--</strong></p>
+
+        <div class="dropzone" id="dropzone-bill">
+          <div class="dropzone-icon">📄</div>
+          <div class="dropzone-text">
+            <strong>Utility Bill (PDF)</strong>
+            <span>Drag & drop or click to select</span>
+          </div>
+          <input type="file" id="file-bill" accept=".pdf" hidden>
+        </div>
+
+        <div class="dropzone" id="dropzone-submeter">
+          <div class="dropzone-icon">📊</div>
+          <div class="dropzone-text">
+            <strong>Submeter Report (CSV)</strong>
+            <span>Drag & drop or click to select</span>
+          </div>
+          <input type="file" id="file-submeter" accept=".csv" hidden>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="btn-back-lease">Back</button>
+          <button class="btn btn-secondary" id="btn-manual-entry">Enter Manually</button>
+          <button class="btn btn-primary" id="btn-process" disabled>Process with AI</button>
+        </div>
+      </section>
+
+      <!-- Step 3: Review Data -->
+      <section class="panel hidden" id="panel-review">
+        <h2>Review Extracted Data</h2>
+        <p class="hint">Verify the numbers below. Click any value to edit.</p>
+
+        <div class="data-grid">
+          <div class="data-item data-item-dates">
+            <label>Billing Period</label>
+            <div class="date-range">
+              <input type="date" id="data-period-start" class="data-input date-input">
+              <span class="date-separator">to</span>
+              <input type="date" id="data-period-end" class="data-input date-input">
+            </div>
+          </div>
+          <div class="data-item">
+            <label>Total Bill Amount</label>
+            <div class="input-prefix">$</div>
+            <input type="number" id="data-total-amount" class="data-input" step="0.01">
+          </div>
+          <div class="data-item">
+            <label>Total Property Usage</label>
+            <input type="number" id="data-total-kwh" class="data-input" step="0.01">
+            <div class="input-suffix">kWh</div>
+          </div>
+          <div class="data-item">
+            <label>ADU Usage (Submeter)</label>
+            <input type="number" id="data-adu-kwh" class="data-input" step="0.01">
+            <div class="input-suffix">kWh</div>
+          </div>
+        </div>
+
+        <div class="calculated-section">
+          <h3>Calculated Split</h3>
+
+          <div class="calc-mode-toggle">
+            <label class="toggle-label">
+              <input type="checkbox" id="calc-mode-toggle">
+              <span class="toggle-text">Bill for submeter usage only (ADU)</span>
+            </label>
+          </div>
+
+          <div class="calc-row">
+            <span id="calc-usage-label">Main House Usage:</span>
+            <strong id="calc-main-kwh">-- kWh</strong>
+          </div>
+          <div class="calc-row">
+            <span>Effective Rate:</span>
+            <strong id="calc-rate">$--/kWh</strong>
+          </div>
+          <div class="calc-row highlight">
+            <span id="calc-amount-label">Main House Owes:</span>
+            <strong id="calc-main-amount">$--</strong>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="btn-back-upload">Back</button>
+          <button class="btn btn-primary" id="btn-generate">Generate Invoice</button>
+        </div>
+
+        <!-- Progress indicator for automated steps -->
+        <div id="generate-progress" class="progress-section hidden">
+          <div class="progress-item" id="progress-tenants">⏳ Fetching tenants...</div>
+          <div class="progress-item" id="progress-property">⏳ Finding property...</div>
+          <div class="progress-item" id="progress-address">⏳ Fetching address...</div>
+          <div class="progress-item" id="progress-invoice">⏳ Generating invoice...</div>
+        </div>
+      </section>
+
+      <!-- Step 4: Create Charge -->
+      <section class="panel hidden" id="panel-charge">
+        <h2>Review & Create Charge</h2>
+
+        <div class="invoice-status" id="invoice-status">
+          <span class="status-icon">✓</span>
+          <span>Invoice generated successfully</span>
+          <button class="btn btn-link" id="btn-download">Download PDF</button>
+        </div>
+
+        <div class="charge-summary">
+          <div class="summary-row">
+            <span>Tenant:</span>
+            <strong id="charge-tenant-name">--</strong>
+          </div>
+          <div class="summary-row">
+            <span>Property:</span>
+            <strong id="charge-property-address">--</strong>
+          </div>
+          <div class="summary-row">
+            <span>Charge Type:</span>
+            <strong>Utility Charge</strong>
+          </div>
+          <div class="summary-row">
+            <span>Amount:</span>
+            <strong id="charge-amount">$--</strong>
+          </div>
+          <div class="summary-row">
+            <span>Description:</span>
+            <strong id="charge-description">--</strong>
+          </div>
+          <div class="summary-row">
+            <span>Attachments:</span>
+            <strong id="charge-attachments">--</strong>
+          </div>
+        </div>
+
+        <p class="hint">Click below to open the charge form. The extension will fill it out automatically.</p>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="btn-back-review">Back</button>
+          <button class="btn btn-primary" id="btn-fill-charge">Open & Fill Charge Form</button>
+        </div>
+      </section>
+
+      <!-- Settings prompt -->
+      <section class="panel hidden" id="panel-settings-prompt">
+        <div class="settings-prompt">
+          <div class="settings-icon">⚙️</div>
+          <h2>Setup Required</h2>
+          <p>Please configure your landlord information before using Utility Pro. API key is optional for manual entry mode.</p>
+          <button class="btn btn-primary" id="btn-open-settings">Open Settings</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <button class="btn-link" id="btn-start-over" style="display: none;">Start Over</button>
+      <button class="btn-link" id="btn-settings">Settings</button>
+    </footer>
+
+    <footer class="github-footer">
+      <a href="https://github.com/nmata010/utility-pro-chrome-extension" target="_blank" rel="noopener noreferrer">
+        <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+      </a>
+    </footer>
+  </div>
+
+  <script src="popup-helpers.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
