@@ -1,9 +1,5 @@
 # Utility Pro Invoices - Product Requirements Document (PRD)
 
-**Version:** 1.0
-**Date:** February 1, 2026
-**Status:** In Development
-
 ## 1. Introduction & Vision
 
 ### 1.1. Vision
