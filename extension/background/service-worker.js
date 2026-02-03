@@ -71,6 +71,7 @@ function parseCSVLine(line) {
 // ==================== Storage ====================
 const SETTINGS_KEY = 'utilityPro_settings';
 const defaultSettings = {
+  llmApiKey: '',
   landlordName: '',
   landlordAddress: '',
   landlordPhone: '',
@@ -349,7 +350,7 @@ async function processDocuments(billFileBase64, submeterFileText) {
   try {
     const settings = await getSettings();
     const aduKwh = parseSubmeterCSV(submeterFileText, settings);
-    const billData = await extractBillData(billFileBase64, CONFIG.ANTHROPIC_API_KEY);
+    const billData = await extractBillData(billFileBase64, settings.llmApiKey);
 
     return {
       data: {

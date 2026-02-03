@@ -1,10 +1,9 @@
 // Local development config template
-// Copy this file to config.js and add your API key.
+// Copy this file to config.js to customize prompts.
 // config.js is gitignored and won't be committed.
+// API key is configured via Settings page in the extension.
 
 const CONFIG = {
-  ANTHROPIC_API_KEY: 'YOUR_API_KEY_HERE',
-
   EXTRACTION_PROMPT: `You are extracting data from an electricity utility bill. Extract ONLY the following information and respond with ONLY a JSON object, no other text:
 
 1. Billing period (format exactly as: "Mon DD, YYYY - Mon DD, YYYY", e.g., "Dec 19, 2025 - Jan 22, 2026")
