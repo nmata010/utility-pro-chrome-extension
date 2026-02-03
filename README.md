@@ -34,14 +34,8 @@ Automatically create invoices and charges on TurboTenant for pro-rated utility b
 ### Configuration
 
 1. Copy `extension/lib/config.example.js` to `extension/lib/config.js`
-2. Add your Anthropic API key:
-   ```js
-   const CONFIG = {
-     ANTHROPIC_API_KEY: 'your-api-key-here',
-     // ...
-   };
-   ```
-3. Click the extension icon and go to Settings
+2. Click the extension icon and go to Settings
+3. Add your _Anthropic_ API key:
 4. Enter your landlord information (name, address, phone)
 
 ## Usage
