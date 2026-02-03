@@ -9,10 +9,7 @@
     "scripting"
   ],
   "host_permissions": [
-    "https://rental.turbotenant.com/*",
-    "https://api.turbotenant.com/*",
-    "https://api.anthropic.com/*",
-    "https://api.openai.com/*"
+    "https://api.anthropic.com/*"
   ],
   "action": {
     "default_popup": "popup/popup.html",
