@@ -19,6 +19,7 @@ let form, saveStatus, inputs;
 async function loadSettings() {
   const settings = await getSettings();
 
+  inputs.llmApiKey.value = settings.llmApiKey || '';
   inputs.landlordName.value = settings.landlordName || '';
   inputs.landlordAddress.value = settings.landlordAddress || '';
   inputs.landlordPhone.value = settings.landlordPhone || '';
@@ -31,6 +32,7 @@ async function handleSave(e) {
   e.preventDefault();
 
   const settings = {
+    llmApiKey: inputs.llmApiKey.value,
     landlordName: inputs.landlordName.value,
     landlordAddress: inputs.landlordAddress.value,
     landlordPhone: inputs.landlordPhone.value,
@@ -63,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   saveStatus = document.getElementById('save-status');
 
   inputs = {
+    llmApiKey: document.getElementById('llm-api-key'),
     landlordName: document.getElementById('landlord-name'),
     landlordAddress: document.getElementById('landlord-address'),
     landlordPhone: document.getElementById('landlord-phone'),
