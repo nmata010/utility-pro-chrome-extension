@@ -1,12 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Utility Pro Invoices",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Easy pro-rated billing on TurboTenant",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
   "host_permissions": [
     "https://api.anthropic.com/*"
