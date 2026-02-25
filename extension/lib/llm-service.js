@@ -3,7 +3,7 @@
 
 const LLM_CONFIG = {
   apiUrl: 'https://api.anthropic.com/v1/messages',
-  model: 'claude-3-5-haiku-latest',
+  model: 'claude-haiku-4-5-20251001',
   maxRetries: 2,
   retryDelayMs: 1000
 };
