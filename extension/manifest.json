@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Utility Pro Invoices",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Easy pro-rated billing on TurboTenant",
   "permissions": [
     "storage",
